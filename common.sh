@@ -36,16 +36,14 @@ sed -i '/to-ports 53/d' $ZZZ
 git clone https://github.com/xiaorouji/openwrt-passwall package/luci-app-passwall
 rm -rf package/luci-app-passwall/{v2ray-core,v2ray-plugin,xray-core,xray-plugin}
 git clone https://github.com/fw876/helloworld package/luci-app-ssr-plus
-git clone https://github.com/garypang13/luci-app-bypass package/luci-app-bypass
-git clone --depth=1 https://github.com/garypang13/smartdns-le package/smartdns-le
 
 sed -i "/exit 0/i\chmod +x /etc/webweb.sh && source /etc/webweb.sh" $ZZZ
 
-if [[ ! "${Modelfile}" == "openwrt_amlogic" ]]; then
+if [[ ! "${Modelfile}" == "Openwrt_amlogic" ]]; then
 	sed -i '/IMAGES_GZIP/d' "${PATH1}/${CONFIG_FILE}" > /dev/null 2>&1
 	echo -e "\nCONFIG_TARGET_IMAGES_GZIP=y" >> "${PATH1}/${CONFIG_FILE}"
 fi
-if [[ "${Modelfile}" == "openwrt_amlogic" ]]; then
+if [[ "${Modelfile}" == "Openwrt_amlogic" ]]; then
 	# 修复NTFS格式优盘不自动挂载
 	packages=" \
 	block-mount fdisk usbutils badblocks ntfs-3g kmod-scsi-core kmod-usb-core \
