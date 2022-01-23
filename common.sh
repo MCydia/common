@@ -39,11 +39,11 @@ git clone https://github.com/fw876/helloworld package/luci-app-ssr-plus
 
 sed -i "/exit 0/i\chmod +x /etc/webweb.sh && source /etc/webweb.sh" $ZZZ
 
-if [[ ! "${Modelfile}" == "Openwrt_amlogic" ]]; then
+if [[ ! "${Modelfile}" == "openwrt_amlogic" ]]; then
 	sed -i '/IMAGES_GZIP/d' "${PATH1}/${CONFIG_FILE}" > /dev/null 2>&1
 	echo -e "\nCONFIG_TARGET_IMAGES_GZIP=y" >> "${PATH1}/${CONFIG_FILE}"
 fi
-if [[ "${Modelfile}" == "Openwrt_amlogic" ]]; then
+if [[ "${Modelfile}" == "openwrt_amlogic" ]]; then
 	# 修复NTFS格式优盘不自动挂载
 	packages=" \
 	block-mount fdisk usbutils badblocks ntfs-3g kmod-scsi-core kmod-usb-core \
@@ -110,7 +110,7 @@ find . -name 'luci-app-wol' | xargs -i rm -rf {}
 # 全部作者源码公共diy.sh文件
 ################################################################################################################
 Diy_all() {
-git clone --depth 1 -b "${REPO_BRANCH}" https://github.com/MCydia/openwrt-package "${Home}"/openwrt-package
+git clone --depth 1 -b "${REPO_BRANCH}" https://github.com/281677160/openwrt-package "${Home}"/openwrt-package
 cp -Rf "${Home}"/openwrt-package/* "${Home}" && rm -rf "${Home}"/openwrt-package
 
 if [[ ${REGULAR_UPDATE} == "true" ]]; then
@@ -129,7 +129,7 @@ elif [[ "${REPO_BRANCH}" == "openwrt-18.06" ]]; then
 	cp -Rf "${Home}"/build/common/TIANLING/files "${Home}"
 	cp -Rf "${Home}"/build/common/TIANLING/diy/* "${Home}"
 	cp -Rf "${Home}"/build/common/TIANLING/patches/* "${PATH1}/patches"
-	curl -fsSL https://raw.githubusercontent.com/MCydia/common/main/Convert/1806-default-settings > ${Home}/package/emortal/default-settings/files/99-default-settings
+	curl -fsSL https://raw.githubusercontent.com/281677160/common/main/Convert/1806-default-settings > ${Home}/package/emortal/default-settings/files/99-default-settings
 elif [[ "${REPO_BRANCH}" == "openwrt-21.02" ]]; then
 	cp -Rf "${Home}"/build/common/MORTAL/files "${Home}"
 	cp -Rf "${Home}"/build/common/MORTAL/diy/* "${Home}"
@@ -507,7 +507,7 @@ echo
 
 Diy_tongzhi() {
 GONGGAO g "请大家重新FORK仓库，更新到最新版仓库，新版仓库更改很多，请看说明操作"
-GONGGAO r "https://github.com/MCydia/OpenWrt"
+GONGGAO r "https://github.com/281677160/build-actions"
 echo
 echo
 exit 1
