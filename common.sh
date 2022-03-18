@@ -26,23 +26,22 @@ Compte=$(date +%Y年%m月%d号%H时%M分)
 # LEDE源码通用diy.sh文件
 ################################################################################################################
 Diy_lede() {
+# 给源码做个记号
+RECOGNIZE="${Home}/package/base-files/files/etc/openwrt_release"
+echo -e "\nDISTRIB_RECOGNIZE='18'" >> "${RECOGNIZE}" && sed -i '/^\s*$/d' "${RECOGNIZE}"
+
 find . -name 'luci-app-netdata' -o -name 'netdata' -o -name 'luci-theme-argon' -o -name 'mentohust' | xargs -i rm -rf {}
 find . -name 'luci-app-ipsec-vpnd' -o -name 'luci-app-wol' | xargs -i rm -rf {}
 find . -name 'luci-app-wrtbwmon' -o -name 'wrtbwmon' | xargs -i rm -rf {}
 find . -name 'UnblockNeteaseMusic-Go' -o -name 'UnblockNeteaseMusic' -o -name 'luci-app-unblockmusic' | xargs -i rm -rf {}
 
-sed -i '/to-ports 53/d' $ZZZ
-
-git clone https://github.com/xiaorouji/openwrt-passwall package/luci-app-passwall
-rm -rf package/luci-app-passwall/{v2ray-core,v2ray-plugin,xray-core,xray-plugin}
-git clone https://github.com/fw876/helloworld package/luci-app-ssr-plus
+git clone -b main https://github.com/281677160/openwrt-passwall package/luci-app-passwall
+git clone -b passwall2 https://github.com/281677160/openwrt-passwall  package/luci-app-passwall2
+git clone https://github.com/281677160/helloworld package/luci-app-ssr-plus
+rm -rf package/luci-app-ssr-plus/{dns2socks,microsocks,ipt2socks,pdnsd-alt}
 
 sed -i "/exit 0/i\chmod +x /etc/webweb.sh && source /etc/webweb.sh" $ZZZ
 
-if [[ ! "${Modelfile}" == "openwrt_amlogic" ]]; then
-	sed -i '/IMAGES_GZIP/d' "${PATH1}/${CONFIG_FILE}" > /dev/null 2>&1
-	echo -e "\nCONFIG_TARGET_IMAGES_GZIP=y" >> "${PATH1}/${CONFIG_FILE}"
-fi
 if [[ "${Modelfile}" == "openwrt_amlogic" ]]; then
 	# 修复NTFS格式优盘不自动挂载
 	packages=" \
@@ -71,16 +70,23 @@ fi
 # LIENOL源码通用diy.sh文件
 ################################################################################################################
 Diy_lienol() {
-find . -name 'luci-app-netdata' -o -name 'netdata' -o -name 'luci-theme-argon' | xargs -i rm -rf {}
-find . -name 'ddns-scripts_aliyun' -o -name 'ddns-scripts_dnspod' -o -name 'luci-app-wol' | xargs -i rm -rf {}
-find . -name 'pdnsd-alt' | xargs -i rm -rf {}
-find . -name 'UnblockNeteaseMusic-Go' -o -name 'UnblockNeteaseMusic' -o -name 'luci-app-unblockmusic' | xargs -i rm -rf {}
-rm -rf feeds/packages/libs/libcap
-git clone https://github.com/xiaorouji/openwrt-passwall package/luci-app-passwall
-rm -rf package/luci-app-passwall/{v2ray-core,v2ray-plugin,xray-core,xray-plugin}
-git clone https://github.com/fw876/helloworld package/luci-app-ssr-plus
+# 给源码做个记号
+RECOGNIZE="${Home}/package/base-files/files/etc/openwrt_release"
+echo -e "\nDISTRIB_RECOGNIZE='20'" >> "${RECOGNIZE}" && sed -i '/^\s*$/d' "${RECOGNIZE}"
 
-sed -i 's/DEFAULT_PACKAGES +=/DEFAULT_PACKAGES += luci-app-passwall/g' target/linux/x86/Makefile
+find . -name 'luci-app-netdata' -o -name 'netdata' -o -name 'luci-app-ttyd' | xargs -i rm -rf {}
+find . -name 'ddns-scripts_aliyun' -o -name 'ddns-scripts_dnspod' -o -name 'luci-app-wol' | xargs -i rm -rf {}
+find . -name 'UnblockNeteaseMusic-Go' -o -name 'UnblockNeteaseMusic' -o -name 'luci-app-unblockmusic' | xargs -i rm -rf {}
+
+DISTRIB="$(egrep -o "DISTRIB_DESCRIPTION='.* '" $ZZZ |sed -r "s/DISTRIB_DESCRIPTION='(.*) '/\1/")"
+[[ -n "${DISTRIB}" ]] && sed -i "s/${DISTRIB}/OpenWrt/g" $ZZZ
+
+git clone -b main https://github.com/281677160/openwrt-passwall package/luci-app-passwall
+git clone -b passwall2 https://github.com/281677160/openwrt-passwall  package/luci-app-passwall2
+git clone https://github.com/281677160/helloworld package/luci-app-ssr-plus
+rm -rf package/luci-app-ssr-plus/{dns2socks,microsocks,ipt2socks,pdnsd-alt}
+
+sed -i 's/DEFAULT_PACKAGES +=/DEFAULT_PACKAGES += luci-app-passwall2/g' target/linux/x86/Makefile
 sed -i "/exit 0/i\chmod +x /etc/webweb.sh && source /etc/webweb.sh" $ZZZ
 }
 
@@ -89,10 +95,14 @@ sed -i "/exit 0/i\chmod +x /etc/webweb.sh && source /etc/webweb.sh" $ZZZ
 # 天灵源码18.06 diy.sh文件
 ################################################################################################################
 Diy_Tianling() {
+# 给源码做个记号
+RECOGNIZE="${Home}/package/base-files/files/etc/openwrt_release"
+echo -e "\nDISTRIB_RECOGNIZE='18'" >> "${RECOGNIZE}" && sed -i '/^\s*$/d' "${RECOGNIZE}"
 
 find . -name 'luci-app-argon-config' -o -name 'luci-theme-argon' -o -name 'luci-theme-argonv3' -o -name 'luci-theme-netgear' | xargs -i rm -rf {}
 find . -name 'luci-app-netdata' -o -name 'netdata' -o -name 'luci-app-cifs' | xargs -i rm -rf {}
 find . -name 'luci-app-wrtbwmon' -o -name 'wrtbwmon' -o -name 'luci-app-wol' | xargs -i rm -rf {}
+find . -name 'luci-app-adguardhome' -o -name 'adguardhome' -o -name 'luci-theme-opentomato' | xargs -i rm -rf {}
 }
 
 
@@ -100,8 +110,14 @@ find . -name 'luci-app-wrtbwmon' -o -name 'wrtbwmon' -o -name 'luci-app-wol' | x
 # 天灵源码21.02 diy.sh文件
 ################################################################################################################
 Diy_mortal() {
+# 给源码做个记号
+RECOGNIZE="${Home}/package/base-files/files/etc/openwrt_release"
+echo -e "\nDISTRIB_RECOGNIZE='20'" >> "${RECOGNIZE}" && sed -i '/^\s*$/d' "${RECOGNIZE}"
+
 find . -name 'luci-app-netdata' -o -name 'netdata' -o -name 'luci-app-cifs' | xargs -i rm -rf {}
-find . -name 'luci-app-wol' | xargs -i rm -rf {}
+find . -name 'luci-app-wol' -o -name 'luci-app-argon-config' | xargs -i rm -rf {}
+find . -name 'luci-app-adguardhome' -o -name 'adguardhome' | xargs -i rm -rf {}
+rm -rf feeds/luci/themes
 }
 
 
@@ -114,13 +130,17 @@ cp -Rf "${Home}"/openwrt-package/* "${Home}" && rm -rf "${Home}"/openwrt-package
 
 if [[ ${REGULAR_UPDATE} == "true" ]]; then
 	git clone https://github.com/281677160/luci-app-autoupdate feeds/luci/applications/luci-app-autoupdate
-	cp -Rf "${PATH1}"/{AutoUpdate.sh,replace.sh} package/base-files/files/bin
+	[[ -f "${PATH1}/AutoUpdate.sh" ]] && cp -Rf "${PATH1}"/AutoUpdate.sh package/base-files/files/bin/AutoUpdate.sh
+	[[ -f "${PATH1}/replace.sh" ]] && cp -Rf "${PATH1}"/replace.sh package/base-files/files/bin/replace.sh
 fi
+[[ -f "${PATH1}/openwrt.sh" ]] && cp -Rf "${PATH1}"/openwrt.sh package/base-files/files/sbin/openwrt
+chmod 777 package/base-files/files/sbin/openwrt
+
 if [[ "${REPO_BRANCH}" == "master" ]]; then
 	cp -Rf "${Home}"/build/common/LEDE/files "${Home}"
 	cp -Rf "${Home}"/build/common/LEDE/diy/* "${Home}"
 	cp -Rf "${Home}"/build/common/LEDE/patches/* "${PATH1}/patches"
-elif [[ "${REPO_BRANCH}" == "19.07" ]]; then
+elif [[ "${REPO_BRANCH}" == "main" ]]; then
 	cp -Rf "${Home}"/build/common/LIENOL/files "${Home}"
 	cp -Rf "${Home}"/build/common/LIENOL/diy/* "${Home}"
 	cp -Rf "${Home}"/build/common/LIENOL/patches/* "${PATH1}/patches"
@@ -146,18 +166,15 @@ fi
 if [ -n "$(ls -A "${PATH1}/patches" 2>/dev/null)" ]; then
 	find "${PATH1}/patches" -type f -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -p1 --forward --no-backup-if-mismatch"
 fi
-if [[ "${REPO_BRANCH}" == "master" ]]; then
+if [[ "${REPO_BRANCH}" == "master" ]] && [[ ! ${byop} == "0" ]]; then
 	sed -i 's/distversion)%>/distversion)%><!--/g' package/lean/autocore/files/*/index.htm
 	sed -i 's/luciversion)%>)/luciversion)%>)-->/g' package/lean/autocore/files/*/index.htm
 	sed -i 's#localtime  = os.date()#localtime  = os.date("%Y-%m-%d") .. " " .. translate(os.date("%A")) .. " " .. os.date("%X")#g' package/lean/autocore/files/*/index.htm
 fi
-if [[ "${REPO_BRANCH}" == "openwrt-18.06" ]]; then
+if [[ "${REPO_BRANCH}" == "openwrt-18.06" ]] && [[ ! ${byop} == "0" ]]; then
 	sed -i 's/distversion)%>/distversion)%><!--/g' package/emortal/autocore/files/*/index.htm
 	sed -i 's/luciversion)%>)/luciversion)%>)-->/g' package/emortal/autocore/files/*/index.htm
 	sed -i 's#localtime  = os.date()#localtime  = os.date("%Y-%m-%d") .. " " .. translate(os.date("%A")) .. " " .. os.date("%X")#g' package/emortal/autocore/files/*/index.htm
-fi
-if [ -n "$(ls -A "feeds/luci/applications/luci-app-rebootschedule" 2>/dev/null)" ]; then
-	chmod -R 775 feeds/luci/applications/luci-app-rebootschedule
 fi
 }
 
@@ -326,8 +343,20 @@ fi
 if [[ `grep -c "CONFIG_PACKAGE_luci-theme-argon=y" ${Home}/.config` -eq '1' ]]; then
 	if [[ `grep -c "CONFIG_PACKAGE_luci-app-argon-config=y" ${Home}/.config` == '0' ]]; then
 		sed -i '/luci-app-argon-config/d' ${Home}/.config
-		echo -e "\nCONFIG_PACKAGE_luci-theme-argon=y" >> ${Home}/.config
+		echo -e "\nCONFIG_PACKAGE_luci-app-argon-config=y" >> ${Home}/.config
 	fi
+else
+	sed -i '/luci-app-argon-config/d' ${Home}/.config
+	echo -e "\n# CONFIG_PACKAGE_luci-app-argon-config is not set" >> ${Home}/.config
+fi
+if [[ `grep -c "CONFIG_TARGET_x86=y" ${Home}/.config` -eq '1' ]]; then
+	sed -i '/IMAGES_GZIP/d' "${Home}/.config"
+	echo -e "\nCONFIG_TARGET_IMAGES_GZIP=y" >> "${Home}/.config"
+fi
+if [[ `grep -c "CONFIG_TARGET_rockchip=y" ${Home}/.config` -eq '1' ]] || [[ `grep -c "CONFIG_TARGET_armvirt=y" ${Home}/.config` -eq '1' ]] || [[ `grep -c "CONFIG_TARGET_bcm27xx=y" ${Home}/.config` -eq '1' ]]; then
+	sed -i 's/CONFIG_PACKAGE_luci-app-autoupdate=y/# CONFIG_PACKAGE_luci-app-autoupdate is not set/g' ${Home}/.config
+	export REGULAR_UPDATE="false"
+	echo "REGULAR_UPDATE=false" >> $GITHUB_ENV
 fi
 if [[ `grep -c "CONFIG_TARGET_ROOTFS_EXT4FS=y" ${Home}/.config` -eq '1' ]]; then
 	if [[ `grep -c "CONFIG_TARGET_ROOTFS_PARTSIZE" ${Home}/.config` -eq '0' ]]; then
@@ -363,20 +392,16 @@ Diy_chuli() {
 
 sed -i '$ s/exit 0$//' ${Home}/package/base-files/files/etc/rc.local
 echo '
-if [[ `grep -c "coremark" /etc/crontabs/root` -eq '1' ]]; then
-  sed -i '/coremark/d' /etc/crontabs/root
+if [[ `grep -c "coremark" /etc/crontabs/root` -eq "1" ]]; then
+  sed -i "/coremark/d" /etc/crontabs/root
 fi
 /etc/init.d/network restart
 /etc/init.d/uhttpd restart
 exit 0
 ' >> ${Home}/package/base-files/files/etc/rc.local
 
-if [[ "${REPO_BRANCH}" == "19.07" ]]; then
-	sed -i 's/PATCHVER:=4.9/PATCHVER:=4.14/g' target/linux/*/Makefile
-	sed -i 's/PATCHVER:=4.19/PATCHVER:=4.14/g' target/linux/*/Makefile
-fi
 
-if [[ "${REPO_BRANCH}" == "19.07" ]] || [[ "${REPO_BRANCH}" == "master" ]]; then
+if [[ "${REPO_BRANCH}" == "main" ]] || [[ "${REPO_BRANCH}" == "master" ]]; then
 	if [[ "${TARGET_BOARD}" == "x86" ]]; then
 		cp -Rf "${Home}"/build/common/Custom/DRM-I915 target/linux/x86/DRM-I915
 		for X in $(ls -1 target/linux/x86 | grep "config-"); do echo -e "\n$(cat target/linux/x86/DRM-I915)" >> target/linux/x86/${X}; done
@@ -419,6 +444,9 @@ if [[ "${BY_INFORMATION}" == "true" ]]; then
 	if [[ `grep -c "CONFIG_PACKAGE_luci-i18n-qbittorrent-zh-cn=y" ${Home}/.config` -eq '0' ]]; then
 		sed -i '/qbittorrent/d' Plug-in
 	fi
+	if [[ `grep -c "CONFIG_PACKAGE_luci-app-passwall2=y" ${Home}/.config` -eq '0' ]]; then
+		sed -i '/luci-app-passwall2/d' Plug-in
+	fi
 	sed -i '/INCLUDE/d' Plug-in > /dev/null 2>&1
 	sed -i '/=m/d' Plug-in > /dev/null 2>&1
 	sed -i 's/CONFIG_PACKAGE_/、/g' Plug-in
@@ -451,25 +479,15 @@ GONGGAO() {
 Diy_gonggao() {
 GONGGAO g "第一次用我仓库的，请不要拉取任何插件，先SSH进入固件配置那里看过我脚本实在是没有你要的插件才再拉取"
 GONGGAO g "拉取插件应该单独拉取某一个你需要的插件，别一下子就拉取别人一个插件包，这样容易增加编译失败概率"
+GONGGAO g "修改IP、DNS、网关，请输入命令：openwrt"
 echo
 echo
-}
-
-Diy_tongzhi() {
-GONGGAO g "请大家重新FORK仓库，更新到最新版仓库，新版仓库更改很多，请看说明操作"
-GONGGAO r "https://github.com/MCydia/OpenWrt"
-echo
-echo
-exit 1
 }
 
 ################################################################################################################
 # 编译信息
 ################################################################################################################
 Diy_xinxi() {
-if [[ "${TARGET_PROFILE}" =~ (friendlyarm_nanopi-r2s|friendlyarm_nanopi-r4s|armvirt) ]]; then
-	REGULAR_UPDATE="false"
-fi
 echo
 TIME b "编译源码: ${CODE}"
 TIME b "源码链接: ${REPO_URL}"
@@ -551,6 +569,7 @@ if [[ ${REGULAR_UPDATE} == "true" ]]; then
 	TIME b "云端路径: ${Github_UP_RELEASE}"
 	TIME g "《编译成功后，会自动把固件发布到指定地址，然后才会生成云端路径》"
 	TIME g "《普通的那个发布固件跟云端的发布路径是两码事，如果你不需要普通发布的可以不用打开发布功能》"
+	TIME g "修改IP、DNS、网关或者在线更新，请输入命令：openwrt"
 	echo
 else
 	echo
